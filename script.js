@@ -1,21 +1,31 @@
 // Main JavaScript for Akash Portfolio
 
-function initThemeToggle() {
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    if (!themeToggleBtn) return;
+function initMobileMenu() {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
 
-    themeToggleBtn.addEventListener('click', () => {
-        const root = document.documentElement;
-        const isDark = root.classList.contains('dark');
+    if (!menuBtn || !mobileMenu) return;
 
-        if (isDark) {
-            root.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        } else {
-            root.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
+    // টগল বাটন কাজ করবে
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // মেনুর যেকোনো লিংকে ক্লিক করলেই মেনু বন্ধ হয়ে যাবে
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+
+    // মেনুর বাইরে কোথাও ক্লিক করলেও মেনু বন্ধ হয়ে যাবে
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
         }
     });
+}
 
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
