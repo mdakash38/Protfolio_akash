@@ -1,5 +1,30 @@
 // Main JavaScript for Akash Portfolio
 
+function initThemeToggle() {
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (!themeToggleBtn) return;
+
+    themeToggleBtn.addEventListener('click', () => {
+        const root = document.documentElement;
+        const isDark = root.classList.contains('dark');
+
+        if (isDark) {
+            root.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        } else {
+            root.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+    } else {
+        document.documentElement.classList.add('dark');
+    }
+}
+
 function initMobileMenu() {
     const menuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -27,34 +52,10 @@ function initMobileMenu() {
     });
 }
 
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.documentElement.classList.remove('dark');
-    } else {
-        document.documentElement.classList.add('dark');
-    }
-}
-
-function initMobileMenu() {
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-
-    if (!menuBtn || !mobileMenu) return;
-
-    menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-    });
-
-    mobileMenu.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-    });
-}
-
 function initTypingAnimation() {
     const targetElement = document.getElementById('typing-text');
     if (!targetElement) return;
 
-    // Explicitly updated to 2nd Year 2nd Semester!
     const textSequence = [
         '2nd Year 2nd Semester Student',
         'Department of Software Engineering',
