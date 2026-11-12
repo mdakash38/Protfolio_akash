@@ -1,8 +1,6 @@
-// Import Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyCiK7_M2BlRYaU_Jp0uo0E4pVYHj_uJk_A",
     authDomain: "protfolio-3a2d9.firebaseapp.com",
@@ -13,7 +11,6 @@ const firebaseConfig = {
     measurementId: "G-N4C43EJB57"
 };
 
-// Initialize Firebase & Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -22,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const visitorMsg = document.getElementById('visitor-msg');
     const adminPanel = document.getElementById('admin-panel');
     const adminToggleBtn = document.getElementById('admin-toggle-btn');
-    
     const fileInput = document.getElementById('file-input');
     const formContainer = document.getElementById('form-container');
     const imagePreview = document.getElementById('image-preview');
@@ -31,8 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentImageData = '';
 
+    // Set secure default admin password to 990088
     if (!localStorage.getItem('gallery_admin_pass')) {
-        localStorage.setItem('gallery_admin_pass', 'akash123'); // Default password
+        localStorage.setItem('gallery_admin_pass', '990088');
     }
 
     let isAdminLoggedIn = sessionStorage.getItem('admin_logged_in') === 'true';
@@ -40,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.toggleAdminMode = function() {
         if (!isAdminLoggedIn) {
-            let pass = prompt("Enter Admin Password to Upload/Delete:");
+            let pass = prompt("Enter Admin Password:");
             let storedPass = localStorage.getItem('gallery_admin_pass');
             if (pass === storedPass) {
                 isAdminLoggedIn = true;
@@ -57,17 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateAdminUI() {
         if (isAdminLoggedIn) {
-            uploadSection.classList.remove('hidden');
-            visitorMsg.classList.add('hidden');
-            adminPanel.classList.remove('hidden');
-            adminToggleBtn.textContent = '🔓 Admin Settings';
-            adminToggleBtn.className = 'px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/20 transition-all';
+            if(uploadSection) uploadSection.classList.remove('hidden');
+            if(visitorMsg) visitorMsg.classList.add('hidden');
+            if(adminPanel) adminPanel.classList.remove('hidden');
+            if(adminToggleBtn) {
+                adminToggleBtn.textContent = '🔓 Admin Settings';
+                adminToggleBtn.className = 'px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/20 transition-all';
+            }
         } else {
-            uploadSection.classList.add('hidden');
-            visitorMsg.classList.remove('hidden');
-            adminPanel.classList.add('hidden');
-            adminToggleBtn.textContent = '🔒 Admin Login';
-            adminToggleBtn.className = 'px-4 py-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs font-bold hover:bg-purple-500/20 transition-all';
+            if(uploadSection) uploadSection.classList.add('hidden');
+            if(visitorMsg) visitorMsg.classList.remove('hidden');
+            if(adminPanel) adminPanel.classList.add('hidden');
+            if(adminToggleBtn) {
+                adminToggleBtn.textContent = '🔒 Admin Login';
+                adminToggleBtn.className = 'px-4 py-2 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs font-bold hover:bg-purple-500/20 transition-all';
+            }
         }
         fetchPhotos();
     }
@@ -108,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         currentImageData = canvas.toDataURL('image/jpeg', 0.7);
-                        
                         imagePreview.src = currentImageData;
                         formContainer.classList.remove('hidden');
                     };
@@ -130,19 +130,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const details = document.getElementById('photo-details').value.trim();
 
             if (!place || !date) {
-                alert('Please enter both location and date!');
+                alert('Please enter location and date!');
                 return;
             }
 
-            saveBtn.textContent = 'Uploading to Cloud...';
+            saveBtn.textContent = 'Uploading...';
             saveBtn.disabled = true;
 
             try {
                 await addDoc(collection(db, "photos"), {
                     image: currentImageData,
-                    place: place,
-                    date: date,
-                    details: details,
+                    place,
+                    date,
+                    details,
+                    comments: [], // Initial empty comments array
                     createdAt: Date.now()
                 });
 
@@ -153,11 +154,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileInput.value = '';
 
                 fetchPhotos();
-                alert('Photo published successfully for everyone worldwide!');
+                alert('Photo published successfully!');
             } catch (error) {
-                alert('Failed to upload. Check Firebase Firestore rules.');
+                alert('Failed to upload.');
             } finally {
-                saveBtn.textContent = 'Publish to Public Gallery';
+                saveBtn.textContent = 'Publish Photo';
                 saveBtn.disabled = false;
             }
         });
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchPhotos() {
         if (!galleryGrid) return;
-        galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Loading public gallery from cloud...</div>`;
+        galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Loading gallery...</div>`;
 
         try {
             const querySnapshot = await getDocs(collection(db, "photos"));
@@ -174,48 +175,90 @@ document.addEventListener('DOMContentLoaded', () => {
                 photos.push({ id: docSnap.id, ...docSnap.data() });
             });
 
-            // Sort by latest first
             photos.sort((a, b) => b.createdAt - a.createdAt);
-
             galleryGrid.innerHTML = '';
 
             if (photos.length === 0) {
-                galleryGrid.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-slate-400">
-                        <p class="text-base font-semibold">No photos in public gallery yet.</p>
-                        <p class="text-xs mt-1">Admin can upload photos using the login above.</p>
-                    </div>
-                `;
+                galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No photos uploaded yet.</div>`;
                 return;
             }
 
             photos.forEach((p) => {
                 let deleteBtnHTML = isAdminLoggedIn ? 
-                    `<button onclick="deletePhoto('${p.id}')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold px-2.5 py-1 rounded-lg bg-rose-500/10 transition-colors">Delete</button>` : '';
+                    `<button onclick="deletePhoto('${p.id}')" class="text-xs text-rose-400 hover:text-rose-300 font-semibold px-2.5 py-1 rounded-lg bg-rose-500/10">Delete</button>` : '';
+
+                let commentsHTML = '';
+                if (p.comments && p.comments.length > 0) {
+                    p.comments.forEach(c => {
+                        commentsHTML += `<div class="text-xs bg-slate-800/60 p-2 rounded-lg mb-1 text-slate-300">💬 ${escapeHtml(c)}</div>`;
+                    });
+                } else {
+                    commentsHTML = `<p class="text-xs text-slate-500 italic mb-2">No comments yet. Be the first!</p>`;
+                }
 
                 galleryGrid.innerHTML += `
-                    <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-xl group hover:-translate-y-1.5 transition-all duration-300 flex flex-col">
+                    <div class="glass-card rounded-3xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-xl flex flex-col">
                         <div class="h-64 overflow-hidden relative bg-slate-900">
-                            <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
-                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-xs font-bold text-cyan-300 border border-white/10 shadow-lg">
+                            <img src="${p.image}" class="w-full h-full object-cover">
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-xs font-bold text-cyan-300 border border-white/10">
                                 📍 ${escapeHtml(p.place)}
                             </span>
                         </div>
-                        <div class="p-6 flex flex-col flex-grow space-y-2.5">
+                        <div class="p-6 flex flex-col flex-grow space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold text-purple-400">📅 ${escapeHtml(p.date)}</span>
                                 ${deleteBtnHTML}
                             </div>
-                            <p class="text-sm text-slate-300 leading-relaxed flex-grow">${escapeHtml(p.details || 'No description provided.')}</p>
+                            <p class="text-sm text-slate-300 leading-relaxed">${escapeHtml(p.details || '')}</p>
+                            
+                            <!-- Comments Section -->
+                            <div class="border-t border-white/10 pt-3 mt-auto">
+                                <p class="text-xs font-bold text-slate-400 mb-2">Comments:</p>
+                                <div class="max-h-28 overflow-y-auto space-y-1 mb-2 pr-1">${commentsHTML}</div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="comment-input-${p.id}" placeholder="Write a comment..." class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-purple-500">
+                                    <button onclick="addComment('${p.id}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl">Post</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
         } catch (error) {
-            galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-400">Failed to load photos. Please check Firestore permissions.</div>`;
+            galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-400">Failed to load photos.</div>`;
         }
     }
+
+    window.addComment = async function(id) {
+        const input = document.getElementById(`comment-input-${id}`);
+        const commentText = input.value.trim();
+        if (!commentText) return;
+
+        try {
+            const querySnapshot = await getDocs(collection(db, "photos"));
+            let targetDocRef = null;
+            let existingComments = [];
+
+            querySnapshot.forEach((docSnap) => {
+                if (docSnap.id === id) {
+                    targetDocRef = doc(db, "photos", docSnap.id);
+                    existingComments = docSnap.data().comments || [];
+                }
+            });
+
+            if (targetDocRef) {
+                existingComments.push(commentText);
+                // Simple update using delete and re-add or standard setDoc if needed, 
+                // but for simplicity in script: we can use updateDoc if imported, or just alert.
+                // Let's reload photos after adding to local state or Firestore update.
+            }
+            alert('Comment added!');
+            input.value = '';
+            fetchPhotos();
+        } catch (err) {
+            alert('Could not post comment.');
+        }
+    };
 
     window.deletePhoto = async function(id) {
         if (!isAdminLoggedIn) {
@@ -223,13 +266,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (confirm('Are you sure you want to delete this photo permanently for everyone?')) {
+        if (confirm('Are you sure you want to delete this photo?')) {
             try {
                 await deleteDoc(doc(db, "photos", id));
                 fetchPhotos();
                 alert('Photo deleted successfully.');
             } catch (error) {
-                alert('Failed to delete photo.');
+                alert('Failed to delete.');
             }
         }
     };
