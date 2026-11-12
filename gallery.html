@@ -41,7 +41,7 @@
             <p class="text-slate-500 dark:text-slate-400 text-sm mt-3">Moments captured through my lens. View and share your thoughts below!</p>
         </div>
 
-        <!-- Admin Control & Password Settings Panel (Hidden by default) -->
+        <!-- Admin Control & Password Settings Panel -->
         <div id="admin-panel" class="hidden glass-card p-6 rounded-3xl border border-purple-500/40 mb-10 max-w-2xl mx-auto space-y-6 shadow-2xl">
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
                 <h3 class="font-bold text-sm text-purple-400 flex items-center gap-2">⚙️ Admin Security Panel (Unlocked)</h3>
@@ -80,21 +80,21 @@
                     <label class="block text-xs font-bold uppercase mb-1.5 text-slate-300">Details / Story</label>
                     <textarea id="photo-details" rows="2" placeholder="Write a short description..." class="w-full bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white"></textarea>
                 </div>
-                <button id="save-photo-btn" onclick="uploadPhoto()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold text-sm shadow-lg shadow-purple-600/30">Publish Photo</button>
+                <button id="save-photo-btn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold text-sm shadow-lg shadow-purple-600/30">Publish Photo to Cloud</button>
             </div>
         </div>
 
         <!-- Visitor Message -->
         <div id="visitor-msg" class="glass-card p-4 rounded-2xl text-center max-w-xl mx-auto mb-12 border border-white/5 text-slate-400 text-xs">
-            🌐 Anyone can view and comment on photos. Admin login required only for uploading/deleting.
+            🌐 Anyone can view and comment. Admin login required only for uploading/deleting.
         </div>
 
         <!-- Gallery Grid -->
         <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="col-span-full text-center py-12 text-slate-400">Loading gallery...</div>
+            <div class="col-span-full text-center py-12 text-slate-400">Loading gallery from cloud...</div>
         </div>
     </main>
 
-    <script src="gallery_script.js"></script>
+    <script type="module" src="gallery_script.js"></script>
 </body>
 </html>
