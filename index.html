@@ -504,88 +504,29 @@
             </div>
         </div>
     </section>
-<!-- Custom Wave Layout Gallery Highlights Section on Homepage -->
-<section class="py-20 px-4 max-w-5xl mx-auto text-center relative overflow-hidden">
-    <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="text-xs font-bold uppercase tracking-wider text-purple-400">Visual Showcase</span>
-        <h2 class="text-3xl sm:text-5xl font-black tracking-tight mt-2 text-white">Photography <span class="text-gradient">Highlights</span></h2>
-        <div class="h-1.5 w-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mx-auto mt-4"></div>
-    </div>
+    <!-- Photography Highlights -->
+    <section id="photography-highlights" class="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16" data-aos="fade-up">
+                <span class="text-xs font-bold uppercase tracking-wider text-pink-500">Visual Journal</span>
+                <h2 class="text-3xl sm:text-5xl font-black tracking-tight mt-2 text-slate-900 dark:text-white">
+                    Photography <span class="text-gradient">Highlights</span>
+                </h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-3">Recent moments captured through my lens.</p>
+            </div>
 
-    <!-- 3 Cards Container with Wave Layout (Pic-1 & Pic-3 Up, Pic-2 Down) -->
-    <div id="home-gallery-preview" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start mb-24 px-4">
-        <!-- JavaScript দিয়ে ফায়ারবেস থেকে ডায়নামিক ছবি এখানে লোড হবে -->
-        <div class="col-span-full text-slate-400 text-sm py-10">Loading photography highlights...</div>
-    </div>
+            <p id="photo-highlights-status" class="text-sm text-center text-slate-500 dark:text-slate-400 mb-6" role="status" aria-live="polite">
+                Loading photos...
+            </p>
+            <div id="photo-highlights-grid" class="grid grid-cols-3 items-start gap-2 sm:gap-5 md:gap-8 max-w-6xl mx-auto"></div>
+            <div class="text-center mt-10">
+                <a href="gallery.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-bold shadow-lg shadow-purple-500/20 hover:-translate-y-0.5 transition-all">
+                    View Full Gallery <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </section>
 
-    <div class="mt-8">
-        <a href="gallery.html" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-black text-sm shadow-xl shadow-purple-600/30 hover:scale-105 transition-all inline-flex items-center gap-2">
-            Explore Full Gallery Page →
-        </a>
-    </div>
-</section>
-
-<!-- Firebase SDK & Wave Layout Script -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCiK7_M2BlRYaU_Jp0uo0E4pVYHj_uJk_A",
-        authDomain: "protfolio-3a2d9.firebaseapp.com",
-        projectId: "protfolio-3a2d9",
-        storageBucket: "protfolio-3a2d9.firebasestorage.app",
-        messagingSenderId: "927373572364",
-        appId: "1:927373572364:web:3a6a0acc7167459c04b129",
-        measurementId: "G-N4C43EJB57"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        const previewContainer = document.getElementById('home-gallery-preview');
-        if (!previewContainer) return;
-
-        try {
-            const querySnapshot = await getDocs(collection(db, "photos"));
-            let photos = [];
-            querySnapshot.forEach((docSnap) => {
-                photos.push({ id: docSnap.id, ...docSnap.data() });
-            });
-
-            photos.sort((a, b) => b.createdAt - a.createdAt);
-
-            if (photos.length === 0) {
-                previewContainer.innerHTML = `<p class="col-span-full text-slate-400 text-sm py-8">No photos uploaded yet. Visit gallery to upload!</p>`;
-                return;
-            }
-
-            const topPhotos = photos.slice(0, 3);
-            previewContainer.innerHTML = '';
-
-            topPhotos.forEach((p, index) => {
-                // Wave layout classes: index 0 (Pic-1) normal, index 1 (Pic-2) pushed down (mt-12 md:mt-16), index 2 (Pic-3) normal
-                let positionClass = index === 1 ? 'md:mt-16' : '';
-                let glowColor = index === 0 ? 'border-purple-500/40 shadow-[0_0_30px_rgba(168,85,247,0.3)]' : (index === 1 ? 'border-blue-500/40 shadow-[0_0_30px_rgba(59,130,246,0.3)]' : 'border-pink-500/40 shadow-[0_0_30px_rgba(236,72,153,0.3)]');
-                let badgeColor = index === 0 ? 'text-purple-300' : (index === 1 ? 'text-blue-300' : 'text-pink-300');
-
-                previewContainer.innerHTML += `
-                    <div class="w-full p-3 rounded-3xl glass-card border ${glowColor} bg-slate-900/95 transform hover:-translate-y-2 transition-all duration-300 ${positionClass}">
-                        <div class="h-64 sm:h-72 rounded-2xl overflow-hidden relative">
-                            <img src="${p.image}" class="w-full h-full object-cover">
-                            <div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-xs font-bold ${badgeColor}">
-                                📍 ${p.place || 'Captured Moment'}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        } catch (error) {
-            previewContainer.innerHTML = `<p class="col-span-full text-slate-400 text-sm py-8">Could not load preview highlights.</p>`;
-        }
-    });
-</script>
     <!-- Experience / Tutoring Section -->
     <section id="experience" class="py-16 sm:py-24 px-4 sm:px-6 max-w-7xl mx-auto">
         <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16" data-aos="fade-up">
@@ -731,5 +672,112 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+        import {
+            collection,
+            getDocs,
+            getFirestore,
+            limit,
+            orderBy,
+            query
+        } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: 'AIzaSyCiK7_M2BlRYaU_Jp0uo0E4pVYHj_uJk_A',
+            authDomain: 'protfolio-3a2d9.firebaseapp.com',
+            projectId: 'protfolio-3a2d9',
+            storageBucket: 'protfolio-3a2d9.firebasestorage.app',
+            messagingSenderId: '927373572364',
+            appId: '1:927373572364:web:3a6a0acc7167459c04b129',
+            measurementId: 'G-N4C43EJB57'
+        };
+
+        const grid = document.getElementById('photo-highlights-grid');
+        const status = document.getElementById('photo-highlights-status');
+
+        function createPhotoCard(photo, index) {
+            const card = document.createElement('article');
+            card.className = `group rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-px shadow-md md:shadow-xl shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-purple-500/25 ${index === 1 ? 'mt-3 sm:mt-8 md:mt-16' : ''}`;
+
+            const content = document.createElement('div');
+            content.className = 'h-full overflow-hidden rounded-[11px] sm:rounded-[15px] md:rounded-[23px] bg-white dark:bg-slate-950';
+
+            const imageWrap = document.createElement('div');
+            imageWrap.className = 'relative aspect-[3/4] sm:aspect-[4/3] overflow-hidden bg-slate-200 dark:bg-slate-800';
+
+            const image = document.createElement('img');
+            image.className = 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105';
+            image.alt = photo.place ? `Photo taken in ${photo.place}` : 'Photography highlight';
+            image.loading = 'lazy';
+            if (typeof photo.image === 'string' &&
+                (/^data:image\/[a-zA-Z0-9.+-]+;base64,/.test(photo.image) || /^https:\/\//i.test(photo.image))) {
+                image.src = photo.image;
+            } else {
+                image.alt = 'Photo unavailable';
+            }
+
+            const place = document.createElement('span');
+            place.className = 'absolute bottom-1 left-1 max-w-[94%] truncate rounded-full border border-white/20 bg-slate-950/70 px-1.5 py-1 text-[9px] font-semibold text-white backdrop-blur sm:bottom-2 sm:left-2 sm:px-2 sm:text-[10px] md:bottom-3 md:left-3 md:px-3 md:py-1.5 md:text-xs';
+            place.textContent = `📍 ${typeof photo.place === 'string' && photo.place.trim() ? photo.place : 'Unknown location'}`;
+            imageWrap.append(image, place);
+
+            const caption = document.createElement('div');
+            caption.className = 'p-2 sm:p-4 md:p-6';
+
+            const title = document.createElement('h3');
+            title.className = 'text-[10px] leading-tight font-bold text-slate-900 dark:text-white sm:text-sm md:text-lg';
+            title.textContent = photo.place || 'Photography highlight';
+
+            const details = document.createElement('p');
+            details.className = 'mt-1 text-[9px] leading-snug text-slate-600 dark:text-slate-300 line-clamp-2 sm:mt-2 sm:text-xs md:text-sm';
+            details.textContent = typeof photo.details === 'string' && photo.details.trim()
+                ? photo.details
+                : 'A moment captured through my lens.';
+
+            caption.append(title, details);
+            content.append(imageWrap, caption);
+            card.append(content);
+            return card;
+        }
+
+        async function loadPhotoHighlights() {
+            status.textContent = 'Loading photos...';
+            grid.replaceChildren();
+
+            try {
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                const photosQuery = query(
+                    collection(db, 'photos'),
+                    orderBy('createdAt', 'desc'),
+                    limit(3)
+                );
+                const snapshot = await getDocs(photosQuery);
+
+                if (snapshot.empty) {
+                    status.textContent = 'No photos have been added yet.';
+                    return;
+                }
+
+                snapshot.docs.forEach((photoDoc, index) => {
+                    grid.append(createPhotoCard(photoDoc.data(), index));
+                });
+                status.textContent = '';
+            } catch (error) {
+                console.error('Could not load photography highlights:', error);
+                status.textContent = 'Photos could not be loaded. Please try again.';
+
+                const retry = document.createElement('button');
+                retry.type = 'button';
+                retry.className = 'ml-2 underline text-blue-600 dark:text-blue-400';
+                retry.textContent = 'Retry';
+                retry.addEventListener('click', loadPhotoHighlights, { once: true });
+                status.append(retry);
+            }
+        }
+
+        loadPhotoHighlights();
+    </script>
 </body>
 </html>

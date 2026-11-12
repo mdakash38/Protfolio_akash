@@ -31,24 +31,12 @@ function initMobileMenu() {
 
     if (!menuBtn || !mobileMenu) return;
 
-    // টগল বাটন কাজ করবে
-    menuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
+    menuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
     });
 
-    // মেনুর যেকোনো লিংকে ক্লিক করলেই মেনু বন্ধ হয়ে যাবে
     mobileMenu.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-        });
-    });
-
-    // মেনুর বাইরে কোথাও ক্লিক করলেও মেনু বন্ধ হয়ে যাবে
-    document.addEventListener('click', (e) => {
-        if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-            mobileMenu.classList.add('hidden');
-        }
+        link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
     });
 }
 
@@ -56,6 +44,7 @@ function initTypingAnimation() {
     const targetElement = document.getElementById('typing-text');
     if (!targetElement) return;
 
+    // Explicitly updated to 2nd Year 2nd Semester!
     const textSequence = [
         '2nd Year 2nd Semester Student',
         'Department of Software Engineering',
