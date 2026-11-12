@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCiK7_M2BlRYaU_Jp0uo0E4pVYHj_uJk_A",
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentImageData = '';
 
-    // Set secure default admin password to 990088
+    // Set secure admin password to 990088
     if (!localStorage.getItem('gallery_admin_pass')) {
         localStorage.setItem('gallery_admin_pass', '990088');
     }
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            saveBtn.textContent = 'Uploading...';
+            saveBtn.textContent = 'Uploading to Cloud...';
             saveBtn.disabled = true;
 
             try {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     place,
                     date,
                     details,
-                    comments: [], // Initial empty comments array
+                    comments: [],
                     createdAt: Date.now()
                 });
 
@@ -154,11 +154,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileInput.value = '';
 
                 fetchPhotos();
-                alert('Photo published successfully!');
+                alert('Photo published successfully worldwide!');
             } catch (error) {
-                alert('Failed to upload.');
+                alert('Failed to upload. Check Firestore rules.');
             } finally {
-                saveBtn.textContent = 'Publish Photo';
+                saveBtn.textContent = 'Publish Photo to Cloud';
                 saveBtn.disabled = false;
             }
         });
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchPhotos() {
         if (!galleryGrid) return;
-        galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Loading gallery...</div>`;
+        galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">Loading gallery from cloud...</div>`;
 
         try {
             const querySnapshot = await getDocs(collection(db, "photos"));
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
             galleryGrid.innerHTML = '';
 
             if (photos.length === 0) {
-                galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No photos uploaded yet.</div>`;
+                galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No photos in gallery yet. Admin can upload using login above.</div>`;
                 return;
             }
 
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             });
         } catch (error) {
-            galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-400">Failed to load photos.</div>`;
+            galleryGrid.innerHTML = `<div class="col-span-full text-center py-12 text-rose-400">Failed to load photos from cloud. Check Firestore permissions.</div>`;
         }
     }
 
@@ -235,26 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!commentText) return;
 
         try {
-            const querySnapshot = await getDocs(collection(db, "photos"));
-            let targetDocRef = null;
-            let existingComments = [];
-
-            querySnapshot.forEach((docSnap) => {
-                if (docSnap.id === id) {
-                    targetDocRef = doc(db, "photos", docSnap.id);
-                    existingComments = docSnap.data().comments || [];
-                }
-            });
-
-            if (targetDocRef) {
+            const docRef = doc(db, "photos", id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                let existingComments = docSnap.data().comments || [];
                 existingComments.push(commentText);
-                // Simple update using delete and re-add or standard setDoc if needed, 
-                // but for simplicity in script: we can use updateDoc if imported, or just alert.
-                // Let's reload photos after adding to local state or Firestore update.
+                await updateDoc(docRef, { comments: existingComments });
+                input.value = '';
+                fetchPhotos();
             }
-            alert('Comment added!');
-            input.value = '';
-            fetchPhotos();
         } catch (err) {
             alert('Could not post comment.');
         }
@@ -266,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (confirm('Are you sure you want to delete this photo?')) {
+        if (confirm('Are you sure you want to delete this photo permanently?')) {
             try {
                 await deleteDoc(doc(db, "photos", id));
                 fetchPhotos();
