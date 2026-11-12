@@ -38,17 +38,17 @@
         <div class="text-center max-w-2xl mx-auto mb-12">
             <span class="text-xs font-bold uppercase tracking-wider text-pink-500">Visual Journal</span>
             <h1 class="text-3xl sm:text-5xl font-black tracking-tight mt-2">Public <span class="text-gradient">Photography</span></h1>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mt-3">Moments captured through my lens, visible to everyone worldwide.</p>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-3">Moments captured through my lens. View and share your thoughts below!</p>
         </div>
 
-        <!-- Admin Control & Password Settings Box (Hidden by default) -->
+        <!-- Admin Control & Password Settings Panel (Hidden by default) -->
         <div id="admin-panel" class="hidden glass-card p-6 rounded-3xl border border-purple-500/40 mb-10 max-w-2xl mx-auto space-y-6 shadow-2xl">
             <div class="flex items-center justify-between border-b border-white/10 pb-4">
-                <h3 class="font-bold text-sm text-purple-400 flex items-center gap-2">⚙️ Admin Security Panel</h3>
-                <span class="text-xs text-emerald-400 font-semibold">Unlocked</span>
+                <h3 class="font-bold text-sm text-purple-400 flex items-center gap-2">⚙️ Admin Security Panel (Unlocked)</h3>
+                <span class="text-xs text-emerald-400 font-semibold">Active Admin</span>
             </div>
             <div class="space-y-3">
-                <p class="text-xs text-slate-400">Change your upload/delete security password:</p>
+                <p class="text-xs text-slate-400">Change Admin Password:</p>
                 <div class="flex gap-2">
                     <input type="password" id="new-password" placeholder="Enter new password" class="flex-1 bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500">
                     <button onclick="changePassword()" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition-all">Update Pass</button>
@@ -61,8 +61,7 @@
             <input type="file" id="file-input" accept="image/*" class="hidden">
             <div class="space-y-3" onclick="document.getElementById('file-input').click()">
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center text-2xl shadow-inner">📸</div>
-                <p class="text-sm font-bold">Drag & Drop your photo here, or <span class="text-blue-500 underline">Browse Image</span></p>
-                <p class="text-xs text-slate-400">Admin Mode Active - Uploaded photos will be visible to everyone</p>
+                <p class="text-sm font-bold">Click to upload photo as Admin</p>
             </div>
             
             <div id="form-container" class="hidden mt-6 space-y-4 text-left border-t border-slate-200 dark:border-white/10 pt-6">
@@ -71,7 +70,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase mb-1.5 text-slate-300">Place / Location</label>
-                    <input type="text" id="photo-place" placeholder="e.g. Sylhet, Bangladesh" class="w-full bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white placeholder-slate-500">
+                    <input type="text" id="photo-place" placeholder="e.g. Dhaka, Bangladesh" class="w-full bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase mb-1.5 text-slate-300">Date Captured</label>
@@ -79,20 +78,20 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase mb-1.5 text-slate-300">Details / Story</label>
-                    <textarea id="photo-details" rows="2" placeholder="Write a short story about this shot..." class="w-full bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white placeholder-slate-500"></textarea>
+                    <textarea id="photo-details" rows="2" placeholder="Write a short description..." class="w-full bg-slate-100 dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white"></textarea>
                 </div>
-                <button id="save-photo-btn" onclick="uploadPhoto()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold text-sm shadow-lg shadow-purple-600/30 hover:opacity-95 transition-all">Publish to Public Gallery</button>
+                <button id="save-photo-btn" onclick="uploadPhoto()" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold text-sm shadow-lg shadow-purple-600/30">Publish Photo</button>
             </div>
         </div>
 
         <!-- Visitor Message -->
-        <div id="visitor-msg" class="glass-card p-6 rounded-2xl text-center max-w-xl mx-auto mb-12 border border-white/5 text-slate-400 text-xs">
-            🌐 Anyone can view these photos. Click <strong>Admin Login</strong> at the top right with your password to upload or delete photos.
+        <div id="visitor-msg" class="glass-card p-4 rounded-2xl text-center max-w-xl mx-auto mb-12 border border-white/5 text-slate-400 text-xs">
+            🌐 Anyone can view and comment on photos. Admin login required only for uploading/deleting.
         </div>
 
         <!-- Gallery Grid -->
         <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="col-span-full text-center py-12 text-slate-400">Loading public gallery...</div>
+            <div class="col-span-full text-center py-12 text-slate-400">Loading gallery...</div>
         </div>
     </main>
 
