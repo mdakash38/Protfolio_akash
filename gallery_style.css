@@ -1,38 +1,106 @@
-/* Photography Gallery Custom Styles */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
-
-html {
-    scroll-behavior: smooth;
+/* গ্যালারি পেজের মূল থিম */
+:root {
+    color-scheme: dark;
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.glass-card {
-    background: rgba(17, 24, 39, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+html {
+    scroll-behavior: smooth;
 }
 
-.glass-nav {
-    background: rgba(11, 15, 25, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+body {
+    background-image:
+        radial-gradient(ellipse at 12% 0%, rgba(59, 130, 246, 0.1), transparent 34rem),
+        radial-gradient(ellipse at 88% 8%, rgba(168, 85, 247, 0.1), transparent 32rem);
 }
 
 .text-gradient {
-    background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%);
+    background: linear-gradient(120deg, #7dd3fc, #c4b5fd 55%, #f0abfc);
     background-clip: text;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
-::-webkit-scrollbar {
-    width: 8px;
+/* লগইন ও ছবি আপলোড ফর্ম */
+.form-control {
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    background: rgba(2, 6, 23, 0.65);
+    padding: 0.75rem 0.875rem;
+    color: #f1f5f9;
+    font: inherit;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
 }
-::-webkit-scrollbar-track {
-    background: #0b0f19;
+
+.form-control:focus {
+    border-color: rgba(167, 139, 250, 0.8);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #3b82f6, #8b5cf6, #ec4899);
-    border-radius: 4px;
+
+.form-control::placeholder {
+    color: #64748b;
+}
+
+/* ক্যাটাগরি ফিল্টার ট্যাব */
+.filter-tab {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    padding: 0.6rem 1rem;
+    color: #cbd5e1;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.filter-tab:hover,
+.filter-tab.is-active {
+    border-color: rgba(167, 139, 250, 0.55);
+    background: rgba(139, 92, 246, 0.16);
+    color: #e9d5ff;
+}
+
+/* ছবি ও কমেন্ট কার্ড */
+.photo-card {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 1.25rem;
+    background: rgba(15, 23, 42, 0.72);
+    box-shadow: 0 18px 55px -32px rgba(0, 0, 0, 0.9);
+}
+
+.photo-image-wrap {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #111827;
+}
+
+.photo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 450ms ease;
+}
+
+.photo-card:hover .photo-image {
+    transform: scale(1.04);
+}
+
+.photo-comments {
+    max-height: 12rem;
+    overflow-y: auto;
+    scrollbar-color: #475569 transparent;
+    scrollbar-width: thin;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }

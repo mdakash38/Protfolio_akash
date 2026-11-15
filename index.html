@@ -13,13 +13,6 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        brand: {
-                            blue: '#3b82f6',
-                            purple: '#8b5cf6',
-                            pink: '#ec4899',
-                        }
-                    },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                     }
@@ -153,24 +146,14 @@
                 </div>
             </div>
 
-            <!-- Square Picture Box with Breathing Glow -->
+            <!-- মাঝখানে crop করা বৃত্তাকার প্রোফাইল ছবি -->
             <div class="lg:col-span-5 flex flex-col items-center justify-center order-1 lg:order-2 lg:-mt-10" data-aos="zoom-in" data-aos-delay="200">
-                <div class="square-glow-wrapper">
-                    <div class="square-photo-frame">
-                        <img src="akash.jpg" alt="Md. Akash Mia" class="square-photo-img">
+                <div class="circle-glow-wrapper">
+                    <div class="circle-photo-frame">
+                        <img src="akash.jpg" alt="Md. Akash Mia" class="circle-photo-img">
                     </div>
                 </div>
 
-                <!-- Clean Info Badge Below Picture -->
-                <div class="mt-4 sm:mt-6 px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl glass-card border border-slate-200 dark:border-white/15 shadow-sm flex items-center gap-2.5 sm:gap-3 text-center">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <div>
-                        <span class="text-[10px] sm:text-xs uppercase font-extrabold tracking-wider text-slate-500 dark:text-slate-400 block">Academic Status</span>
-                        <span class="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
-                            2nd Year 2nd Semester <span class="text-blue-600 dark:text-purple-400 font-bold">(Software Engineering)</span>
-                        </span>
-                    </div>
-                </div>
             </div>
 
         </div>
@@ -504,25 +487,23 @@
             </div>
         </div>
     </section>
-    <!-- Photography Highlights -->
-    <section id="photography-highlights" class="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16" data-aos="fade-up">
-                <span class="text-xs font-bold uppercase tracking-wider text-pink-500">Visual Journal</span>
-                <h2 class="text-3xl sm:text-5xl font-black tracking-tight mt-2 text-slate-900 dark:text-white">
-                    Photography <span class="text-gradient">Highlights</span>
+    <!-- Firestore থেকে সর্বশেষ ছবি দেখানোর অংশ -->
+    <section id="photography-highlights" class="relative overflow-hidden px-4 py-16 sm:px-6 sm:py-24">
+        <div class="mx-auto max-w-7xl">
+            <div class="mx-auto mb-10 max-w-2xl text-center" data-aos="fade-up">
+                <span class="text-xs font-bold uppercase tracking-[0.25em] text-pink-500">Visual Journal</span>
+                <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+                    Behind the <span class="text-gradient">Lens</span>
                 </h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-3">Recent moments captured through my lens.</p>
+                <p class="mt-3 text-sm text-slate-500 dark:text-slate-400 sm:text-base">The latest moments, places, and stories from my gallery.</p>
             </div>
-
-            <p id="photo-highlights-status" class="text-sm text-center text-slate-500 dark:text-slate-400 mb-6" role="status" aria-live="polite">
-                Loading photos...
-            </p>
-            <div id="photo-highlights-grid" class="grid grid-cols-3 items-start gap-2 sm:gap-5 md:gap-8 max-w-6xl mx-auto"></div>
-            <div class="text-center mt-10">
-                <a href="gallery.html" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-bold shadow-lg shadow-purple-500/20 hover:-translate-y-0.5 transition-all">
-                    View Full Gallery <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            <p id="photo-highlights-status" class="mb-5 text-center text-sm text-slate-500 dark:text-slate-400" role="status" aria-live="polite">Loading photos...</p>
+            <div id="photo-highlights-grid" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+            <div class="mt-9 text-center">
+                <a href="gallery.html" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-purple-500/20 transition-all hover:-translate-y-0.5">
+                    View all photos <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
                 </a>
+                <button id="photo-highlights-retry" type="button" class="ml-3 hidden rounded-xl border border-white/10 px-4 py-3 text-sm font-semibold text-slate-300 hover:bg-white/5">Retry</button>
             </div>
         </div>
     </section>
@@ -692,91 +673,81 @@
             appId: '1:927373572364:web:3a6a0acc7167459c04b129',
             measurementId: 'G-N4C43EJB57'
         };
+        const db = getFirestore(initializeApp(firebaseConfig));
+        const highlightsGrid = document.getElementById('photo-highlights-grid');
+        const highlightsStatus = document.getElementById('photo-highlights-status');
+        const highlightsRetry = document.getElementById('photo-highlights-retry');
 
-        const grid = document.getElementById('photo-highlights-grid');
-        const status = document.getElementById('photo-highlights-status');
-
-        function createPhotoCard(photo, index) {
-            const card = document.createElement('article');
-            card.className = `group rounded-xl sm:rounded-2xl md:rounded-3xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-px shadow-md md:shadow-xl shadow-purple-500/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-purple-500/25 ${index === 1 ? 'mt-3 sm:mt-8 md:mt-16' : ''}`;
-
-            const content = document.createElement('div');
-            content.className = 'h-full overflow-hidden rounded-[11px] sm:rounded-[15px] md:rounded-[23px] bg-white dark:bg-slate-950';
-
-            const imageWrap = document.createElement('div');
-            imageWrap.className = 'relative aspect-[3/4] sm:aspect-[4/3] overflow-hidden bg-slate-200 dark:bg-slate-800';
-
-            const image = document.createElement('img');
-            image.className = 'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105';
-            image.alt = photo.place ? `Photo taken in ${photo.place}` : 'Photography highlight';
-            image.loading = 'lazy';
-            if (typeof photo.image === 'string' &&
-                (/^data:image\/[a-zA-Z0-9.+-]+;base64,/.test(photo.image) || /^https:\/\//i.test(photo.image))) {
-                image.src = photo.image;
-            } else {
-                image.alt = 'Photo unavailable';
-            }
-
-            const place = document.createElement('span');
-            place.className = 'absolute bottom-1 left-1 max-w-[94%] truncate rounded-full border border-white/20 bg-slate-950/70 px-1.5 py-1 text-[9px] font-semibold text-white backdrop-blur sm:bottom-2 sm:left-2 sm:px-2 sm:text-[10px] md:bottom-3 md:left-3 md:px-3 md:py-1.5 md:text-xs';
-            place.textContent = `📍 ${typeof photo.place === 'string' && photo.place.trim() ? photo.place : 'Unknown location'}`;
-            imageWrap.append(image, place);
-
-            const caption = document.createElement('div');
-            caption.className = 'p-2 sm:p-4 md:p-6';
-
-            const title = document.createElement('h3');
-            title.className = 'text-[10px] leading-tight font-bold text-slate-900 dark:text-white sm:text-sm md:text-lg';
-            title.textContent = photo.place || 'Photography highlight';
-
-            const details = document.createElement('p');
-            details.className = 'mt-1 text-[9px] leading-snug text-slate-600 dark:text-slate-300 line-clamp-2 sm:mt-2 sm:text-xs md:text-sm';
-            details.textContent = typeof photo.details === 'string' && photo.details.trim()
-                ? photo.details
-                : 'A moment captured through my lens.';
-
-            caption.append(title, details);
-            content.append(imageWrap, caption);
-            card.append(content);
-            return card;
-        }
-
+        // হোমপেজে Firestore থেকে সর্বশেষ তিনটি ছবি দেখানো হয়
         async function loadPhotoHighlights() {
-            status.textContent = 'Loading photos...';
-            grid.replaceChildren();
+            highlightsStatus.textContent = 'Loading photos...';
+            highlightsRetry.classList.add('hidden');
+            highlightsGrid.replaceChildren();
 
             try {
-                const app = initializeApp(firebaseConfig);
-                const db = getFirestore(app);
-                const photosQuery = query(
+                const photoQuery = query(
                     collection(db, 'photos'),
                     orderBy('createdAt', 'desc'),
                     limit(3)
                 );
-                const snapshot = await getDocs(photosQuery);
-
+                const snapshot = await getDocs(photoQuery);
                 if (snapshot.empty) {
-                    status.textContent = 'No photos have been added yet.';
+                    highlightsStatus.textContent = 'No photos uploaded yet.';
                     return;
                 }
 
-                snapshot.docs.forEach((photoDoc, index) => {
-                    grid.append(createPhotoCard(photoDoc.data(), index));
+                snapshot.docs.forEach((photoDocument, index) => {
+                    highlightsGrid.append(createPhotoHighlight(photoDocument.data(), index));
                 });
-                status.textContent = '';
+                highlightsStatus.textContent = '';
             } catch (error) {
                 console.error('Could not load photography highlights:', error);
-                status.textContent = 'Photos could not be loaded. Please try again.';
-
-                const retry = document.createElement('button');
-                retry.type = 'button';
-                retry.className = 'ml-2 underline text-blue-600 dark:text-blue-400';
-                retry.textContent = 'Retry';
-                retry.addEventListener('click', loadPhotoHighlights, { once: true });
-                status.append(retry);
+                highlightsStatus.textContent = 'Photos could not be loaded. Check your connection and Firestore read rules.';
+                highlightsRetry.classList.remove('hidden');
             }
         }
 
+        function createPhotoHighlight(photo, index) {
+            const card = document.createElement('article');
+            card.className = `group h-full rounded-3xl bg-gradient-to-br from-blue-500/60 via-purple-500/60 to-pink-500/60 p-px shadow-[0_8px_30px_rgba(139,92,246,0.12)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(139,92,246,0.3)] ${index === 1 ? 'mt-8 sm:mt-0 md:mt-16' : ''}`;
+
+            const content = document.createElement('div');
+            content.className = 'h-full overflow-hidden rounded-[23px] bg-slate-950/95';
+
+            const imageFrame = document.createElement('div');
+            imageFrame.className = 'relative aspect-[4/3] overflow-hidden bg-slate-950';
+            const image = document.createElement('img');
+            image.className = 'h-full w-full object-cover';
+            image.alt = photo.place ? `Photo taken in ${photo.place}` : 'Photography highlight';
+            image.loading = 'lazy';
+            if (typeof photo.image === 'string' && /^(data:image\/|https:\/\/)/i.test(photo.image)) {
+                image.src = photo.image;
+            } else {
+                image.alt = 'Photo unavailable';
+            }
+            const locationBadge = document.createElement('span');
+            locationBadge.className = 'absolute left-3 top-3 max-w-[85%] truncate rounded-full border border-white/20 bg-slate-950/80 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md';
+            locationBadge.textContent = `📍 ${photo.place || 'Unknown location'}`;
+            imageFrame.append(image, locationBadge);
+
+            const caption = document.createElement('div');
+            caption.className = 'p-5';
+            const title = document.createElement('h3');
+            title.className = 'font-bold text-slate-900 dark:text-white';
+            title.textContent = photo.place || 'Untitled place';
+            const date = document.createElement('time');
+            date.className = 'mt-1 block text-xs text-slate-500 dark:text-slate-400';
+            date.textContent = photo.date || '';
+            const details = document.createElement('p');
+            details.className = 'mt-3 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-300';
+            details.textContent = photo.details || 'A moment captured through my lens.';
+            caption.append(title, date, details);
+            content.append(imageFrame, caption);
+            card.append(content);
+            return card;
+        }
+
+        highlightsRetry.addEventListener('click', loadPhotoHighlights);
         loadPhotoHighlights();
     </script>
 </body>

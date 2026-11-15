@@ -44,7 +44,6 @@ function initTypingAnimation() {
     const targetElement = document.getElementById('typing-text');
     if (!targetElement) return;
 
-    // Explicitly updated to 2nd Year 2nd Semester!
     const textSequence = [
         '2nd Year 2nd Semester Student',
         'Department of Software Engineering',
@@ -121,7 +120,7 @@ function initContactForm() {
                     statusMessage.className = 'text-xs text-center text-rose-500 pt-1 font-semibold';
                 }
             }
-        } catch (error) {
+        } catch {
             if (statusMessage) {
                 statusMessage.textContent = 'Network error. Please try WhatsApp directly.';
                 statusMessage.className = 'text-xs text-center text-rose-500 pt-1 font-semibold';

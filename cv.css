@@ -68,12 +68,6 @@ body {
     margin: 0 0 12px;
 }
 
-.profile-text {
-    color: var(--muted);
-    font-size: 12px;
-    max-width: 460px;
-}
-
 .section {
     margin-top: 17px;
     break-inside: avoid;

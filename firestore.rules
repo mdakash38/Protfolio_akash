@@ -12,10 +12,12 @@ service cloud.firestore {
           'image', 'place', 'date', 'details', 'createdAt'
         ])
         && request.resource.data.keys().hasOnly([
-          'image', 'place', 'date', 'details', 'createdAt'
+          'image', 'category', 'place', 'date', 'details', 'createdAt'
         ])
         && request.resource.data.image is string
         && request.resource.data.image.size() <= 716800
+        && (!('category' in request.resource.data)
+          || request.resource.data.category in ['mine', 'friends', 'family', 'nature'])
         && request.resource.data.place is string
         && request.resource.data.place.size() > 0
         && request.resource.data.place.size() <= 150
@@ -34,7 +36,7 @@ service cloud.firestore {
       allow update: if isOwner()
         && validPhoto()
         && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['image', 'place', 'date', 'details']);
+          .hasOnly(['image', 'category', 'place', 'date', 'details']);
       allow delete: if isOwner();
 
       match /comments/{commentId} {

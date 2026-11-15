@@ -1,5 +1,4 @@
 /* Global Vibrant Glassmorphism with Smooth Pulsing Glow & 100% Mobile Responsive */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -110,46 +109,37 @@ html.dark .text-gradient {
     -webkit-text-fill-color: transparent;
 }
 
-/* -------------------------------------------------------------
-   SQUARE PHOTO FRAME WITH BREATHING PULSATING LIGHT (100% RESPONSIVE)
-------------------------------------------------------------- */
-.square-glow-wrapper {
+/* মাঝখানে crop করা বৃত্তাকার প্রোফাইল ছবির নরম গ্লো */
+.circle-glow-wrapper {
     position: relative;
-    border-radius: 1.75rem;
-    padding: 6px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.85), rgba(168, 85, 247, 0.85), rgba(236, 72, 153, 0.85));
+    isolation: isolate;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, #38bdf8, #8b5cf6 55%, #ec4899);
     animation: breathingGlow 3.5s ease-in-out infinite;
     display: inline-block;
     max-width: 100%;
 }
 
 @keyframes breathingGlow {
-    0% {
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.35), 
-                    0 0 30px rgba(168, 85, 247, 0.25),
-                    0 0 45px rgba(236, 72, 153, 0.2);
+    0%, 100% {
+        box-shadow: 0 10px 32px rgba(59, 130, 246, 0.2),
+                    0 14px 42px rgba(168, 85, 247, 0.16);
         transform: scale(0.99);
     }
     50% {
-        box-shadow: 0 0 28px rgba(59, 130, 246, 0.75), 
-                    0 0 55px rgba(168, 85, 247, 0.6),
-                    0 0 85px rgba(236, 72, 153, 0.45);
-        transform: scale(1.02);
-    }
-    100% {
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.35), 
-                    0 0 30px rgba(168, 85, 247, 0.25),
-                    0 0 45px rgba(236, 72, 153, 0.2);
-        transform: scale(0.99);
+        box-shadow: 0 14px 42px rgba(59, 130, 246, 0.34),
+                    0 18px 54px rgba(168, 85, 247, 0.28);
+        transform: scale(1);
     }
 }
 
-/* Perfect Square Responsive Container: works seamlessly on 320px to large screens */
-.square-photo-frame {
+/* ছোট-বড় সব পর্দায় বৃত্তাকার ছবির ফ্রেম */
+.circle-photo-frame {
     width: min(68vw, 17.5rem);
     height: min(68vw, 17.5rem);
     aspect-ratio: 1 / 1;
-    border-radius: 1.5rem;
+    border-radius: 50%;
     overflow: hidden;
     background: #0f172a;
     position: relative;
@@ -157,29 +147,29 @@ html.dark .text-gradient {
 }
 
 @media (min-width: 640px) {
-    .square-photo-frame {
+    .circle-photo-frame {
         width: 19.5rem;
         height: 19.5rem;
     }
 }
 
 @media (min-width: 1024px) {
-    .square-photo-frame {
+    .circle-photo-frame {
         width: 22rem;
         height: 22rem;
     }
 }
 
-.square-photo-img {
+.circle-photo-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 20%;
+    object-position: center 28%;
     display: block;
     transition: transform 0.6s ease;
 }
 
-.square-glow-wrapper:hover .square-photo-img {
+.circle-glow-wrapper:hover .circle-photo-img {
     transform: scale(1.05);
 }
 
